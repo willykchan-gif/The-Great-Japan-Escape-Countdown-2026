@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#293b59">
+  <meta name="description" content="Countdown elegan menuju 1 Januari 2027, berlatar Gunung Fuji, Jepang.">
+  <title>Countdown — Tahun Baru 2027</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --white: #fffaf7;
+      --muted: rgba(255,250,247,.84);
+      --line: rgba(255,255,255,.38);
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--white);
+      background: #293b59;
+    }
+    .scene {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100svh;
+      overflow: hidden;
+      padding: clamp(42px, 10vh, 100px) 22px 40px;
+      isolation: isolate;
+      background-image:
+        linear-gradient(180deg, rgba(14,25,48,.20), rgba(14,25,48,.10) 46%, rgba(14,25,48,.24)),
+        url("fuji-background.png");
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(ellipse at 50% 38%, rgba(18,31,54,.04), rgba(18,31,54,.16) 72%);
+    }
+    .content {
+      width: min(100%, 980px);
+      text-align: center;
+      text-shadow: 0 2px 18px rgba(16,24,43,.18);
+    }
+    .eyebrow {
+      margin: 0;
+      font-size: .9rem;
+      letter-spacing: .48em;
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+    .ornament {
+      width: 46px;
+      height: 1px;
+      margin: 27px auto 25px;
+      background: rgba(255,255,255,.85);
+    }
+    .subtitle {
+      margin: 0 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.55rem);
+      font-weight: 400;
+      letter-spacing: .13em;
+    }
+    .target {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 400;
+      letter-spacing: .16em;
+      font-variant-numeric: tabular-nums;
+    }
+    .timezone {
+      margin: 15px 0 0;
+      font-size: .82rem;
+      letter-spacing: .22em;
+    }
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: min(100%, 850px);
+      margin: clamp(55px, 9vh, 88px) auto 0;
+    }
+    .unit {
+      min-width: 0;
+      padding: 0 clamp(8px, 2vw, 24px);
+    }
+    .unit + .unit { border-left: 1px solid var(--line); }
+    .number {
+      display: block;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-size: clamp(2.7rem, 8.4vw, 6.6rem);
+      line-height: 1;
+      letter-spacing: .015em;
+      font-variant-numeric: tabular-nums;
+    }
+    .label {
+      display: block;
+      margin-top: 15px;
+      font-size: clamp(.65rem, 1.4vw, .86rem);
+      letter-spacing: .32em;
+      text-transform: uppercase;
+    }
+    .message {
+      min-height: 1.5em;
+      margin-top: 34px;
+      font-size: .92rem;
+      letter-spacing: .08em;
+    }
+    @media (max-width: 560px) {
+      .scene { padding-top: 11vh; background-position: 53% center; }
+      .eyebrow { font-size: .72rem; letter-spacing: .35em; }
+      .ornament { margin: 22px auto; }
+      .target { letter-spacing: .08em; }
+      .countdown { margin-top: 60px; }
+      .unit { padding: 0 5px; }
+      .number { font-size: clamp(2.2rem, 10vw, 3.6rem); }
+      .label { margin-top: 12px; letter-spacing: .16em; font-size: .62rem; }
+    }
+    @media (max-height: 650px) and (min-width: 561px) {
+      .scene { padding-top: 35px; }
+      .countdown { margin-top: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <section class="content" aria-label="Countdown Sapporo - Tokyo 2027">
+      <p class="eyebrow">Countdown</p>
+      <div class="ornament" aria-hidden="true"></div>
+      <p class="subtitle">Sapporo - Tokyo</p>
+      <p class="target">2026-10-28</p>
+
+      <div class="countdown" role="timer" aria-live="off" aria-label="Waktu tersisa">
+        <div class="unit"><span class="number" id="days">00</span><span class="label">Hari</span></div>
+        <div class="unit"><span class="number" id="hours">00</span><span class="label">Jam</span></div>
+        <div class="unit"><span class="number" id="minutes">00</span><span class="label">Menit</span></div>
+        <div class="unit"><span class="number" id="seconds">00</span><span class="label">Detik</span></div>
+      </div>
+      <p class="message" id="message"></p>
+    </section>
+  </main>
+  <script>
+    // Target is midnight on 1 January 2027 in WIB (UTC+7).
+    const targetTime = new Date("2027-01-01T00:00:00+07:00").getTime();
+    const fields = {
+      days: document.getElementById("days"),
+      hours: document.getElementById("hours"),
+      minutes: document.getElementById("minutes"),
+      seconds: document.getElementById("seconds")
+    };
+    const message = document.getElementById("message");
+
+    function updateCountdown() {
+      const remaining = targetTime - Date.now();
+      if (remaining <= 0) {
+        Object.values(fields).forEach(field => field.textContent = "00");
+        message.textContent = "Selamat Tahun Baru 2027";
+        return;
+      }
+      const totalSeconds = Math.floor(remaining / 1000);
+      fields.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, "0");
+      fields.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+      fields.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+      fields.seconds.textContent = String(totalSeconds % 60).padStart(2, "0");
+      message.textContent = "";
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
